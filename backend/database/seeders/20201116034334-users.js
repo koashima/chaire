@@ -1,5 +1,7 @@
 'use strict';
 
+const bcrypt = require('bcrypt');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     /**
@@ -16,14 +18,14 @@ module.exports = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        password: 'password',
+        password: bcrypt.hashSync('password', 10),
         gender: 'male',
       },
       {
         firstName: 'Swag',
         lastName: 'Boy',
         email: 'swag@swag.com',
-        password: 'password',
+        password: bcrypt.hashSync('secret', 10),
         gender: 'other',
       },
     ]);
