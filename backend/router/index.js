@@ -7,4 +7,4 @@ router.get('/home', (req, res) => {
 
 router.use('/', require('./auth'))
 
-module.exports = router; 
+module.exports = router;

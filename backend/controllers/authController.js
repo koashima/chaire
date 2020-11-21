@@ -1,10 +1,14 @@
 const User = require('../models').User;
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('../config/app');
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    const secret = require('crypto').randomBytes(64).toString('hex');
+
     const user = await User.findOne({
       where: {
         email,
@@ -16,14 +20,33 @@ const login = async (req, res) => {
     if (!bcrypt.compareSync(password, user.password))
       return res.status(401).json({ message: 'incorrect password' });
 
-    res.send(user)
-  } catch (e) {}
-
-  return res.send([email, password]);
+    res.send(userWithToken);
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+  const userWithToken = generateToken(user.get({ raw: true }));
+  return res.send(userWithToken);
 };
 
-const register = async (req, res) => {};
+const register = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+
+    const userWithToken = generateToken(user.get({ raw: true }));
+    return res.send(userWithToken);
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+};
+
+const generateToken = (user) => {
+  delete user.password;
+  const token = jwt.sign(user, config.appKey, { expiresIn: 86400 });
+
+  return { ...user, ...{ token } };
+};
 
 module.exports = {
   login,
+  register,
 };
