@@ -2,6 +2,7 @@ const User = require('../models').User;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../config/app');
+const { validationResult } = require('express-validator');
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -20,15 +21,19 @@ const login = async (req, res) => {
     if (!bcrypt.compareSync(password, user.password))
       return res.status(401).json({ message: 'incorrect password' });
 
-    res.send(userWithToken);
+    const userWithToken = generateToken(user.get({ raw: true }));
+    return res.send(userWithToken);
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }
-  const userWithToken = generateToken(user.get({ raw: true }));
-  return res.send(userWithToken);
+  // return res.send([email, password])
 };
 
 const register = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const user = await User.create(req.body);
 
