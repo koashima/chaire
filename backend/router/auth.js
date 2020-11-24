@@ -9,7 +9,7 @@ router.post('/register', [
   body('lastName').notEmpty(),
   body('gender').notEmpty(),
   body('email').isEmail(),
-  body('firstName').isLength({min: 5}),
+  body('firstName').isLength({min: 2}),
 ], register);
 
 
