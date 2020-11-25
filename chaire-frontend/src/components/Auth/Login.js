@@ -1,6 +1,7 @@
 import React from 'react';
 import loginImage from '../../assets/images/welcome.svg';
 import './Auth.scss';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   return (
@@ -25,7 +26,7 @@ const Login = () => {
 
               <button>LOGIN</button>
             </form>
-            <small>DON'T HAVE AN ACCOUNT? REGISTER!</small>
+            <small>DON'T HAVE AN ACCOUNT?<Link to='/register'>Register!</Link></small>
           </div>
         </div>
       </div>
