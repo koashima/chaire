@@ -7,7 +7,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const secret = require('crypto').randomBytes(64).toString('hex');
+    // const secret = require('crypto').randomBytes(64).toString('hex');
 
     const user = await User.findOne({
       where: {
@@ -25,7 +25,6 @@ const login = async (req, res) => {
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }
-  // return res.send([email, password])
 };
 
 const register = async (req, res) => {
@@ -41,6 +40,7 @@ const register = async (req, res) => {
 };
 
 const generateToken = (user) => {
+  delete user.password
   const token = jwt.sign(user, config.appKey, { expiresIn: 86400 });
 
   return { ...user, ...{ token } };
