@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import loginImage from '../../assets/images/welcome.svg';
 import './Auth.scss';
 import { Link } from 'react-router-dom';
+import authService from '../../services/authService';
 
 const Login = () => {
   const [email, setEmail] = useState('your@email.com');
@@ -9,20 +10,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const reqOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    };
-    return fetch('http://localhost:3000/login', reqOptions)
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => {
-        console.log('err', err);
-      });
+    authService.login(email, password)
   };
 
   return (
